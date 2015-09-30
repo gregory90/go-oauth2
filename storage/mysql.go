@@ -1,11 +1,14 @@
 package storage
 
 import (
-	. "bitbucket.org/pqstudio/go-webutils/logger"
+	"database/sql"
 	"errors"
+
 	"github.com/RangelReale/osin"
 
 	"bitbucket.org/pqstudio/go-oauth2/service"
+
+	. "bitbucket.org/pqstudio/go-webutils/logger"
 )
 
 type MySQLStorage struct {

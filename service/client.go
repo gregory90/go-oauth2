@@ -1,14 +1,14 @@
 package service
 
 import (
+	"database/sql"
+
+	"github.com/RangelReale/osin"
+
 	"bitbucket.org/pqstudio/go-webutils"
 
 	"bitbucket.org/pqstudio/go-oauth2/datastore"
 	"bitbucket.org/pqstudio/go-oauth2/model"
-
-	"github.com/RangelReale/osin"
-
-	//. "bitbucket.org/pqstudio/go-webutils/logger"
 )
 
 func GetClientByUID(tx *sql.Tx, uid string) (*osin.DefaultClient, error) {

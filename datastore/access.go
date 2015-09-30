@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"database/sql"
+
 	"bitbucket.org/pqstudio/go-oauth2/model"
 )
 

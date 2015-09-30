@@ -3,12 +3,11 @@ package service
 import (
 	"database/sql"
 
-	"bitbucket.org/pqstudio/go-webutils"
+	"github.com/RangelReale/osin"
 
 	"bitbucket.org/pqstudio/go-oauth2/datastore"
 	"bitbucket.org/pqstudio/go-oauth2/model"
-
-	"github.com/RangelReale/osin"
+	"bitbucket.org/pqstudio/go-webutils"
 
 	. "bitbucket.org/pqstudio/go-webutils/logger"
 )
