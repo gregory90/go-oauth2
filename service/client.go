@@ -11,8 +11,8 @@ import (
 	//. "bitbucket.org/pqstudio/go-webutils/logger"
 )
 
-func GetClientByUID(uid string) (*osin.DefaultClient, error) {
-	client, err := datastore.GetClientByUID(uid)
+func GetClientByUID(tx *sql.Tx, uid string) (*osin.DefaultClient, error) {
+	client, err := datastore.GetClientByUID(tx, uid)
 	if err != nil {
 		return nil, err
 	}
@@ -26,8 +26,8 @@ func GetClientByUID(uid string) (*osin.DefaultClient, error) {
 	return c, nil
 }
 
-func GetClientByID(id string) (*osin.DefaultClient, error) {
-	client, err := datastore.GetClientByID(id)
+func GetClientByID(tx *sql.Tx, id string) (*osin.DefaultClient, error) {
+	client, err := datastore.GetClientByID(tx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +41,13 @@ func GetClientByID(id string) (*osin.DefaultClient, error) {
 	return c, nil
 }
 
-func CreateClient(client *osin.DefaultClient) error {
+func CreateClient(tx *sql.Tx, client *osin.DefaultClient) error {
 	c := &model.Client{
 		UID:         utils.NewUUID(),
 		Id:          client.Id,
 		Secret:      client.Secret,
 		RedirectUri: client.RedirectUri,
 	}
-	err := datastore.CreateClient(c)
+	err := datastore.CreateClient(tx, c)
 	return err
 }

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"database/sql"
+
 	"bitbucket.org/pqstudio/go-webutils"
 
 	"bitbucket.org/pqstudio/go-oauth2/datastore"
@@ -11,13 +13,13 @@ import (
 	. "bitbucket.org/pqstudio/go-webutils/logger"
 )
 
-func GetAccessByToken(token string) (*osin.AccessData, error) {
-	access, err := datastore.GetAccessByToken(token)
+func GetAccessByToken(tx *sql.Tx, token string) (*osin.AccessData, error) {
+	access, err := datastore.GetAccessByToken(tx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := GetClientByUID(access.ClientID)
+	client, err := GetClientByUID(tx, access.ClientID)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +39,8 @@ func GetAccessByToken(token string) (*osin.AccessData, error) {
 	return a, nil
 }
 
-func CreateAccess(data *osin.AccessData) error {
-	client, err := datastore.GetClientByID(data.Client.GetId())
+func CreateAccess(tx *sql.Tx, data *osin.AccessData) error {
+	client, err := datastore.GetClientByID(tx, data.Client.GetId())
 	if err != nil {
 		return err
 	}
@@ -57,22 +59,22 @@ func CreateAccess(data *osin.AccessData) error {
 	}
 
 	Log.Debug("%+v", access)
-	err = datastore.CreateAccess(access)
+	err = datastore.CreateAccess(tx, access)
 	return err
 }
 
-func DeleteAccessByToken(token string) error {
-	err := datastore.DeleteAccessByToken(token)
+func DeleteAccessByToken(tx *sql.Tx, token string) error {
+	err := datastore.DeleteAccessByToken(tx, token)
 	return err
 }
 
-func GetAccessByRefresh(token string) (*osin.AccessData, error) {
-	access, err := datastore.GetAccessByRefresh(token)
+func GetAccessByRefresh(tx *sql.Tx, token string) (*osin.AccessData, error) {
+	access, err := datastore.GetAccessByRefresh(tx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := GetClientByUID(access.ClientID)
+	client, err := GetClientByUID(tx, access.ClientID)
 	if err != nil {
 		return nil, err
 	}
@@ -92,8 +94,8 @@ func GetAccessByRefresh(token string) (*osin.AccessData, error) {
 	return a, nil
 }
 
-func GetAccessByRefreshModel(token string) (*model.AccessData, error) {
-	access, err := datastore.GetAccessByRefresh(token)
+func GetAccessByRefreshModel(tx *sql.Tx, token string) (*model.AccessData, error) {
+	access, err := datastore.GetAccessByRefresh(tx, token)
 	if err != nil {
 		return nil, err
 	}
@@ -101,8 +103,8 @@ func GetAccessByRefreshModel(token string) (*model.AccessData, error) {
 	return access, nil
 }
 
-func GetAccessByUser(userUID string) (*model.AccessData, error) {
-	access, err := datastore.GetAccessByUser(userUID)
+func GetAccessByUser(tx *sql.Tx, userUID string) (*model.AccessData, error) {
+	access, err := datastore.GetAccessByUser(tx, userUID)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +112,7 @@ func GetAccessByUser(userUID string) (*model.AccessData, error) {
 	return access, nil
 }
 
-func UpdateAccessByToken(token string, userUID string) error {
-	err := datastore.UpdateAccessByToken(token, userUID)
+func UpdateAccessByToken(tx *sql.Tx, token string, userUID string) error {
+	err := datastore.UpdateAccessByToken(tx, token, userUID)
 	return err
 }

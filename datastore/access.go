@@ -1,8 +1,6 @@
 package datastore
 
 import (
-	. "bitbucket.org/pqstudio/go-oauth2/db"
-
 	"bitbucket.org/pqstudio/go-oauth2/model"
 )
 
@@ -10,11 +8,11 @@ const (
 	accessTable string = "access_data"
 )
 
-func GetAccessByToken(token string) (*model.AccessData, error) {
+func GetAccessByToken(tx *sql.Tx, token string) (*model.AccessData, error) {
 	access := &model.AccessData{}
 
 	// get access
-	err := DB.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE accessToken = ?", token).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
+	err := tx.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE accessToken = ?", token).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -22,11 +20,11 @@ func GetAccessByToken(token string) (*model.AccessData, error) {
 	return access, nil
 }
 
-func GetAccessByUser(userUID string) (*model.AccessData, error) {
+func GetAccessByUser(tx *sql.Tx, userUID string) (*model.AccessData, error) {
 	access := &model.AccessData{}
 
 	// get access
-	err := DB.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE userID = unhex(?) ORDER BY createdAt DESC LIMIT 1", userUID).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
+	err := tx.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE userID = unhex(?) ORDER BY createdAt DESC LIMIT 1", userUID).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +32,8 @@ func GetAccessByUser(userUID string) (*model.AccessData, error) {
 	return access, nil
 }
 
-func CreateAccess(data *model.AccessData) error {
-	stmt, err := DB.Prepare("INSERT " + accessTable + " SET uid=unhex(?),clientID=unhex(?),authorizeDataID=unhex(?),accessDataID=unhex(?),userID=unhex(?),accessToken=?,refreshToken=?,expiresIn=?,scope=?,redirectURI=?,createdAt=?")
+func CreateAccess(tx *sql.Tx, data *model.AccessData) error {
+	stmt, err := tx.Prepare("INSERT " + accessTable + " SET uid=unhex(?),clientID=unhex(?),authorizeDataID=unhex(?),accessDataID=unhex(?),userID=unhex(?),accessToken=?,refreshToken=?,expiresIn=?,scope=?,redirectURI=?,createdAt=?")
 	if err != nil {
 		return err
 	}
@@ -49,8 +47,8 @@ func CreateAccess(data *model.AccessData) error {
 	return nil
 }
 
-func DeleteAccessByToken(token string) error {
-	stmt, err := DB.Prepare("DELETE FROM " + accessTable + " WHERE accessToken=?")
+func DeleteAccessByToken(tx *sql.Tx, token string) error {
+	stmt, err := tx.Prepare("DELETE FROM " + accessTable + " WHERE accessToken=?")
 	if err != nil {
 		return err
 	}
@@ -64,11 +62,11 @@ func DeleteAccessByToken(token string) error {
 	return nil
 }
 
-func GetAccessByRefresh(token string) (*model.AccessData, error) {
+func GetAccessByRefresh(tx *sql.Tx, token string) (*model.AccessData, error) {
 	access := &model.AccessData{}
 
 	// get access
-	err := DB.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE refreshToken = ?", token).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
+	err := tx.QueryRow("SELECT lower(hex(uid)), lower(hex(clientID)), lower(hex(userID)),accessToken, refreshToken, expiresIn, scope, redirectURI, createdAt FROM "+accessTable+" WHERE refreshToken = ?", token).Scan(&access.UID, &access.ClientID, &access.UserID, &access.AccessToken, &access.RefreshToken, &access.ExpiresIn, &access.Scope, &access.RedirectUri, &access.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -76,8 +74,8 @@ func GetAccessByRefresh(token string) (*model.AccessData, error) {
 	return access, nil
 }
 
-func UpdateAccessByToken(token string, userUID string) error {
-	stmt, err := DB.Prepare("UPDATE " + accessTable + " SET userID=unhex(?) WHERE accessToken=?")
+func UpdateAccessByToken(tx *sql.Tx, token string, userUID string) error {
+	stmt, err := tx.Prepare("UPDATE " + accessTable + " SET userID=unhex(?) WHERE accessToken=?")
 	if err != nil {
 		return err
 	}
