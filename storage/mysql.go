@@ -6,6 +6,7 @@ import (
 
 	"github.com/RangelReale/osin"
 
+	. "bitbucket.org/pqstudio/go-oauth2/db"
 	"bitbucket.org/pqstudio/go-oauth2/service"
 
 	. "bitbucket.org/pqstudio/go-webutils/logger"
@@ -27,9 +28,14 @@ func (s *MySQLStorage) Clone() osin.Storage {
 func (s *MySQLStorage) Close() {
 }
 
-func (s *MySQLStorage) GetClient(tx *sql.Tx, id string) (osin.Client, error) {
+func (s *MySQLStorage) GetClient(id string) (osin.Client, error) {
 	Log.Notice("OAuth2, get client: %s\n", id)
-	c, err := service.GetClientByID(tx, id)
+	var c *osin.DefaultClient
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		c, err = service.GetClientByID(tx, id)
+		return err
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +43,7 @@ func (s *MySQLStorage) GetClient(tx *sql.Tx, id string) (osin.Client, error) {
 	return c, nil
 }
 
-func (s *MySQLStorage) SetClient(tx *sql.Tx, id string, client osin.Client) error {
+func (s *MySQLStorage) SetClient(id string, client osin.Client) error {
 	Log.Notice("OAuth2, set client: %s\n", id)
 
 	c := &osin.DefaultClient{
@@ -46,33 +52,46 @@ func (s *MySQLStorage) SetClient(tx *sql.Tx, id string, client osin.Client) erro
 		RedirectUri: client.GetRedirectUri(),
 	}
 
-	err := service.CreateClient(tx, c)
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		err = service.CreateClient(tx, c)
+		return err
+	})
 	return err
 }
 
-func (s *MySQLStorage) SaveAuthorize(tx *sql.Tx, data *osin.AuthorizeData) error {
+func (s *MySQLStorage) SaveAuthorize(data *osin.AuthorizeData) error {
 	return errors.New("Not implemented")
 }
 
-func (s *MySQLStorage) LoadAuthorize(tx *sql.Tx, code string) (*osin.AuthorizeData, error) {
+func (s *MySQLStorage) LoadAuthorize(code string) (*osin.AuthorizeData, error) {
 	return nil, errors.New("Not implemented")
 }
 
-func (s *MySQLStorage) RemoveAuthorize(tx *sql.Tx, code string) error {
+func (s *MySQLStorage) RemoveAuthorize(code string) error {
 	return errors.New("Not implemented")
 }
 
-func (s *MySQLStorage) SaveAccess(tx *sql.Tx, data *osin.AccessData) error {
+func (s *MySQLStorage) SaveAccess(data *osin.AccessData) error {
 	Log.Notice("OAuth2, save access: %s\n", data.AccessToken)
 
-	err := service.CreateAccess(tx, data)
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		err = service.CreateAccess(tx, data)
+		return err
+	})
 	return err
 }
 
-func (s *MySQLStorage) LoadAccess(tx *sql.Tx, code string) (*osin.AccessData, error) {
+func (s *MySQLStorage) LoadAccess(code string) (*osin.AccessData, error) {
 	Log.Notice("OAuth2, load access: %s\n", code)
 
-	a, err := service.GetAccessByToken(tx, code)
+	var a *osin.AccessData
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		a, err = service.GetAccessByToken(tx, code)
+		return err
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -80,16 +99,25 @@ func (s *MySQLStorage) LoadAccess(tx *sql.Tx, code string) (*osin.AccessData, er
 	return a, nil
 }
 
-func (s *MySQLStorage) RemoveAccess(tx *sql.Tx, code string) error {
+func (s *MySQLStorage) RemoveAccess(code string) error {
 	Log.Notice("OAuth2, remove access: %s\n", code)
 
-	err := service.DeleteAccessByToken(tx, code)
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		err = service.DeleteAccessByToken(tx, code)
+		return err
+	})
 	return err
 }
 
-func (s *MySQLStorage) LoadRefresh(tx *sql.Tx, code string) (*osin.AccessData, error) {
+func (s *MySQLStorage) LoadRefresh(code string) (*osin.AccessData, error) {
 	Log.Notice("OAuth2, load refresh: %s\n", code)
-	a, err := service.GetAccessByRefresh(tx, code)
+	var a *osin.AccessData
+	err := Transact(DB, func(tx *sql.Tx) error {
+		var err error
+		a, err = service.GetAccessByRefresh(tx, code)
+		return err
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +125,7 @@ func (s *MySQLStorage) LoadRefresh(tx *sql.Tx, code string) (*osin.AccessData, e
 	return a, nil
 }
 
-func (s *MySQLStorage) RemoveRefresh(tx *sql.Tx, code string) error {
+func (s *MySQLStorage) RemoveRefresh(code string) error {
 	Log.Notice("OAuth2, remove refresh: %s\n", code)
 	return nil
 }

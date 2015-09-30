@@ -1,9 +1,13 @@
 package oauth2
 
 import (
-	"bitbucket.org/pqstudio/go-oauth2/storage"
-	"github.com/RangelReale/osin"
+	"database/sql"
 	"net/http"
+
+	"github.com/RangelReale/osin"
+
+	"bitbucket.org/pqstudio/go-oauth2/db"
+	"bitbucket.org/pqstudio/go-oauth2/storage"
 )
 
 var Server *osin.Server
@@ -21,12 +25,13 @@ type Data struct {
 	RefreshToken  string `json:"refresh_token,omitempty"`
 }
 
-func Init() {
+func Init(DB *sql.DB) {
 	sconfig := osin.NewServerConfig()
 	sconfig.AllowedAuthorizeTypes = osin.AllowedAuthorizeType{osin.TOKEN}
 	sconfig.AllowedAccessTypes = osin.AllowedAccessType{osin.REFRESH_TOKEN, osin.PASSWORD, osin.ASSERTION}
 	sconfig.AllowGetAccessRequest = false
 	Server = osin.NewServer(sconfig, storage.NewMySQLStorage())
+	db.Init(DB)
 }
 
 func AccessToken(r *http.Request) string {
