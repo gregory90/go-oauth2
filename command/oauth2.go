@@ -32,3 +32,21 @@ func InvalidateToken(tx *sql.Tx, r *http.Request) error {
 	}
 	return nil
 }
+
+func HandleAccessRequest(r *http.Request, data server.Data) *osin.AccessRequest {
+	r.ParseForm()
+	r.Form.Add("grant_type", data.GrantType)
+	r.Form.Add("username", data.Username)
+	r.Form.Add("password", data.Password)
+	r.Form.Add("assertion", data.Assertion)
+	r.Form.Add("assertion_type", data.AssertionType)
+	r.Form.Add("scope", data.Scope)
+	r.Form.Add("token", data.Token)
+	r.Form.Add("refresh_token", data.RefreshToken)
+
+	r.SetBasicAuth(data.ClientID, data.ClientSecret)
+
+	resp := server.Server.NewResponse()
+	defer resp.Close()
+	return oauth2.Server.HandleAccessRequest(resp, r)
+}
