@@ -22,7 +22,7 @@ func IsTokenAuthorized(r *http.Request) bool {
 
 func InvalidateToken(tx *sql.Tx, r *http.Request) error {
 	token := server.AccessToken(r)
-	access, err := datastore.GetAccessByToken(tx, token)
+	_, err := datastore.GetAccessByToken(tx, token)
 	if err != nil {
 		return err
 	}
