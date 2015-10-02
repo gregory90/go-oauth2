@@ -1,5 +1,11 @@
 package server
 
+import (
+	"net/http"
+
+	"github.com/RangelReale/osin"
+)
+
 var Server *osin.Server
 
 func Init(server *osin.Server) {
