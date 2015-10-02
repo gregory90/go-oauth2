@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/RangelReale/osin"
+
 	"bitbucket.org/pqstudio/go-oauth2/datastore"
 	"bitbucket.org/pqstudio/go-oauth2/server"
 )
@@ -48,5 +50,5 @@ func HandleAccessRequest(r *http.Request, data server.Data) *osin.AccessRequest 
 
 	resp := server.Server.NewResponse()
 	defer resp.Close()
-	return oauth2.Server.HandleAccessRequest(resp, r)
+	return server.Server.HandleAccessRequest(resp, r)
 }
