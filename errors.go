@@ -8,6 +8,6 @@ func (e *AuthenticationError) Error() string {
 	return e.ErrorType
 }
 
-func AuthenticationError(text string) error {
+func NewAuthenticationError(text string) error {
 	return &AuthenticationError{text}
 }
