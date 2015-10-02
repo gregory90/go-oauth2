@@ -4,10 +4,10 @@ type AuthenticationError struct {
 	ErrorType string `json:"error"`
 }
 
-func (e *InvalidAccessToken) Error() string {
+func (e *AuthenticationError) Error() string {
 	return e.ErrorType
 }
 
-func InvalidAccessTokenError(text string) error {
+func AuthenticationError(text string) error {
 	return &AuthenticationError{text}
 }
