@@ -7,10 +7,9 @@ import (
 	"github.com/RangelReale/osin"
 
 	"bitbucket.org/pqstudio/go-oauth2/db"
+	"bitbucket.org/pqstudio/go-oauth2/server"
 	"bitbucket.org/pqstudio/go-oauth2/storage"
 )
-
-var Server *osin.Server
 
 type Data struct {
 	GrantType     string `json:"grant_type,omitempty"`
@@ -30,17 +29,6 @@ func Init(DB *sql.DB) {
 	sconfig.AllowedAuthorizeTypes = osin.AllowedAuthorizeType{osin.TOKEN}
 	sconfig.AllowedAccessTypes = osin.AllowedAccessType{osin.REFRESH_TOKEN, osin.PASSWORD, osin.ASSERTION}
 	sconfig.AllowGetAccessRequest = false
-	Server = osin.NewServer(sconfig, storage.NewMySQLStorage())
+	server.Init(osin.NewServer(sconfig, storage.NewMySQLStorage()))
 	db.Init(DB)
-}
-
-func AccessToken(r *http.Request) string {
-	auth := r.Header["Authorization"]
-
-	var token string
-	if len(auth) > 0 && len(auth[0]) > 7 {
-		token = auth[0][7:]
-	}
-
-	return token
 }
