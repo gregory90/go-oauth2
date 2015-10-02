@@ -2,7 +2,6 @@ package oauth2
 
 import (
 	"database/sql"
-	"net/http"
 
 	"github.com/RangelReale/osin"
 
