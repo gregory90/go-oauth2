@@ -9,8 +9,6 @@ import (
 	"bitbucket.org/pqstudio/go-oauth2/db"
 	"bitbucket.org/pqstudio/go-oauth2/service"
 	. "bitbucket.org/pqstudio/go-webutils/db"
-
-	. "bitbucket.org/pqstudio/go-webutils/logger"
 )
 
 type MySQLStorage struct {
@@ -30,7 +28,6 @@ func (s *MySQLStorage) Close() {
 }
 
 func (s *MySQLStorage) GetClient(id string) (osin.Client, error) {
-	Log.Notice("OAuth2, get client: %s\n", id)
 	var c *osin.DefaultClient
 	err := Transact(db.DB, func(tx *sql.Tx) error {
 		var err error
@@ -45,8 +42,6 @@ func (s *MySQLStorage) GetClient(id string) (osin.Client, error) {
 }
 
 func (s *MySQLStorage) SetClient(id string, client osin.Client) error {
-	Log.Notice("OAuth2, set client: %s\n", id)
-
 	c := &osin.DefaultClient{
 		Id:          client.GetId(),
 		Secret:      client.GetSecret(),
@@ -74,8 +69,6 @@ func (s *MySQLStorage) RemoveAuthorize(code string) error {
 }
 
 func (s *MySQLStorage) SaveAccess(data *osin.AccessData) error {
-	Log.Notice("OAuth2, save access: %s\n", data.AccessToken)
-
 	err := Transact(db.DB, func(tx *sql.Tx) error {
 		var err error
 		err = service.CreateAccess(tx, data)
@@ -85,8 +78,6 @@ func (s *MySQLStorage) SaveAccess(data *osin.AccessData) error {
 }
 
 func (s *MySQLStorage) LoadAccess(code string) (*osin.AccessData, error) {
-	Log.Notice("OAuth2, load access: %s\n", code)
-
 	var a *osin.AccessData
 	err := Transact(db.DB, func(tx *sql.Tx) error {
 		var err error
@@ -101,8 +92,6 @@ func (s *MySQLStorage) LoadAccess(code string) (*osin.AccessData, error) {
 }
 
 func (s *MySQLStorage) RemoveAccess(code string) error {
-	Log.Notice("OAuth2, remove access: %s\n", code)
-
 	err := Transact(db.DB, func(tx *sql.Tx) error {
 		var err error
 		err = service.DeleteAccessByToken(tx, code)
@@ -112,7 +101,6 @@ func (s *MySQLStorage) RemoveAccess(code string) error {
 }
 
 func (s *MySQLStorage) LoadRefresh(code string) (*osin.AccessData, error) {
-	Log.Notice("OAuth2, load refresh: %s\n", code)
 	var a *osin.AccessData
 	err := Transact(db.DB, func(tx *sql.Tx) error {
 		var err error
@@ -127,6 +115,5 @@ func (s *MySQLStorage) LoadRefresh(code string) (*osin.AccessData, error) {
 }
 
 func (s *MySQLStorage) RemoveRefresh(code string) error {
-	Log.Notice("OAuth2, remove refresh: %s\n", code)
 	return nil
 }
