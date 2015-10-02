@@ -35,7 +35,7 @@ func InvalidateToken(tx *sql.Tx, r *http.Request) error {
 	return nil
 }
 
-func HandleAccessRequest(r *http.Request, data server.Data) *osin.AccessRequest {
+func HandleAccessRequest(r *http.Request, data server.Data) (*osin.AccessRequest, *osin.Response) {
 	r.ParseForm()
 	r.Form.Add("grant_type", data.GrantType)
 	r.Form.Add("username", data.Username)
@@ -50,5 +50,6 @@ func HandleAccessRequest(r *http.Request, data server.Data) *osin.AccessRequest 
 
 	resp := server.Server.NewResponse()
 	defer resp.Close()
-	return server.Server.HandleAccessRequest(resp, r)
+	ar := server.Server.HandleAccessRequest(resp, r)
+	return ar, resp
 }
