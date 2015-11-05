@@ -6,8 +6,8 @@ import (
 
 	"github.com/RangelReale/osin"
 
-	"bitbucket.org/pqstudio/go-oauth2/datastore"
-	"bitbucket.org/pqstudio/go-oauth2/server"
+	"github.com/gregory90/go-oauth2/datastore"
+	"github.com/gregory90/go-oauth2/server"
 )
 
 func IsTokenAuthorized(r *http.Request) bool {

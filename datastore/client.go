@@ -3,7 +3,7 @@ package datastore
 import (
 	"database/sql"
 
-	"bitbucket.org/pqstudio/go-oauth2/model"
+	"github.com/gregory90/go-oauth2/model"
 )
 
 const (

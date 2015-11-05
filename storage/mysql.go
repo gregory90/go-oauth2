@@ -6,9 +6,9 @@ import (
 
 	"github.com/RangelReale/osin"
 
-	"bitbucket.org/pqstudio/go-oauth2/db"
-	"bitbucket.org/pqstudio/go-oauth2/service"
-	. "bitbucket.org/pqstudio/go-webutils/db"
+	"github.com/gregory90/go-oauth2/db"
+	"github.com/gregory90/go-oauth2/service"
+	. "github.com/gregory90/go-webutils/db"
 )
 
 type MySQLStorage struct {

@@ -5,9 +5,9 @@ import (
 
 	"github.com/RangelReale/osin"
 
-	"bitbucket.org/pqstudio/go-oauth2/db"
-	"bitbucket.org/pqstudio/go-oauth2/server"
-	"bitbucket.org/pqstudio/go-oauth2/storage"
+	"github.com/gregory90/go-oauth2/db"
+	"github.com/gregory90/go-oauth2/server"
+	"github.com/gregory90/go-oauth2/storage"
 )
 
 func Init(DB *sql.DB) {

@@ -5,11 +5,11 @@ import (
 
 	"github.com/RangelReale/osin"
 
-	"bitbucket.org/pqstudio/go-oauth2/datastore"
-	"bitbucket.org/pqstudio/go-oauth2/model"
-	"bitbucket.org/pqstudio/go-webutils"
+	"github.com/gregory90/go-oauth2/datastore"
+	"github.com/gregory90/go-oauth2/model"
+	"github.com/gregory90/go-webutils"
 
-	. "bitbucket.org/pqstudio/go-webutils/logger"
+	. "github.com/gregory90/go-webutils/logger"
 )
 
 func GetAccessByToken(tx *sql.Tx, token string) (*osin.AccessData, error) {
