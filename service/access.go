@@ -67,6 +67,11 @@ func DeleteAccessByToken(tx *sql.Tx, token string) error {
 	return err
 }
 
+func DeleteAccessByUserUID(tx *sql.Tx, userUID string) error {
+	err := datastore.DeleteAccessByUserUID(tx, userUID)
+	return err
+}
+
 func GetAccessByRefresh(tx *sql.Tx, token string) (*osin.AccessData, error) {
 	access, err := datastore.GetAccessByRefresh(tx, token)
 	if err != nil {

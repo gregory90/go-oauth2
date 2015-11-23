@@ -64,6 +64,21 @@ func DeleteAccessByToken(tx *sql.Tx, token string) error {
 	return nil
 }
 
+func DeleteAccessByUserUID(tx *sql.Tx, userUID string) error {
+	stmt, err := tx.Prepare("DELETE FROM " + accessTable + " WHERE userID=unhex(?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userUID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetAccessByRefresh(tx *sql.Tx, token string) (*model.AccessData, error) {
 	access := &model.AccessData{}
 
